@@ -74,3 +74,31 @@ Function.prototype.curry = function(...args){
     return self.apply(null, args.concat(secondaryArgs));
   }
 }
+
+
+/**
+ * A more complete curry example
+ * https://github.com/adrice727/hanuman#curry
+ *
+ * Returns a curried version of the supplied function
+ * @param {Function} fn - The function to be curried
+ * @param {...*} [args] - A single argument or series of arguments
+ * TODO Preserve length of original function
+ */
+    const curry = (fn, args) => {
+
+        args = args || [];
+
+        return function () {
+
+            const arity = fn.length;
+            const combinedArgs = args.concat(Array.from(arguments));
+
+            if (combinedArgs.length === arity) {
+                return fn.apply(this, combinedArgs);
+            } else {
+                return curry(fn, combinedArgs);
+            }
+
+        };
+    };
