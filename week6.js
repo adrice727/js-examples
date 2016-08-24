@@ -1,63 +1,87 @@
-var getTwo = function() {
-	/**
-   * return http.get('https://some-api/two')
-   */
-	return new Promise(function(resolve, reject) {
-  	setTimeout(function(){
-    	var success = Math.random() > .50;
-      success ? resolve(2) : reject(`Ruh roh, couldn't get two`);
-    }, 2000);
+
+// With node-style callbacks
+function doAsyncThings() {
+  doAsyncOne(function(err, result) {
+    if (!err) {
+      doAsyncTwo(result, function(err, result) {
+        if (!err) {
+          doAsyncThree(result, function(err, result) {
+            //  . . . etc.
+          })
+        } else {
+          handleError(err)
+        }
+      })
+    } else {
+      handleError(err);
+    }
+  })
+}
+
+// With promises
+function doAsyncThings() {
+  doAsyncOne()
+  .then(doAsyncTwo)
+  .then(doAsyncThree)
+  .catch(handleError);
+}
+
+/**
+ * Return promises from within node callbacks
+ */
+
+const api = require('api');
+const getUser = function(id) {
+  return new Promise(function(resolve, reject){
+    api.getUser(id, function(err, data){
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data)
+      }
+    })
   });
-};
-
-var two = function() {
-  return new Promise(function(resolve, reject) {
-    resolve(2);
-  });
-};
-
-var timesFour = function(x) {
-  return new Promise(function(resolve, reject) {
-    resolve(x * 4);
-  });
-};
-
-var plus22 = function(x) {
-	return new Promise(function(resolve, reject){
-  	resolve(x + 22);
-  });
-};
-
-var updateUI = function(result) {
-  document.getElementById('result').innerHTML = `Result: ${result}`;
 }
 
-var displayError = function(error) {
-  document.getElementById('error').innerHTML = `Error: ${error}`;
+getUser('98adjsnf')
+.then(userData => console.log(userData));
+
+
+/**
+ * Using bluebird's promisify allows use to call the api method directly
+ * without having to wrap it in a promise.
+ * http://bluebirdjs.com/docs/api/promisification.html
+ */
+
+const Promise = require('bluebird');
+const api = Promise.promisifyAll(require('api'));
+
+api.getUserAsync('98adjsnf')
+.then(userData => console.log(userData));
+
+
+/**
+ * JS Fiddle from Class:
+ * https://jsfiddle.net/c2dgdnL8/4/
+ */
+
+/** Arrow functions */
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+// 'this' is the global scope with standard anonymous functions
+var tim = {
+  name: 'tim',
+  getName: function(){
+    setTimeout(function(){ console.log('Name: ',this.name)}, 2000)
+  }
 }
+tim.getName(); // log 'Name: ' after 2 seconds
 
-var reset = function(){
-	  document.getElementById('result').innerHTML = '';
-    document.getElementById('error').innerHTML = '';
-    document.getElementById('calc').classList.remove('hidden');
+
+// 'this' is the containing scope with arrow functions
+var tim = {
+  name: 'tim',
+  getName: function(){
+    setTimeout(() => console.log('Name: ',this.name), 2000)
+  }
 }
-
-var allDone = function() {
-  document.getElementById('waiting').classList.add('hidden');
-  setTimeout(reset, 3000);
-}
-
-var calculate = function(){
-  document.getElementById('calc').classList.add('hidden');
-  document.getElementById('waiting').classList.remove('hidden');
-	getTwo()
-  .then(timesFour)
-  .then(plus22)
-  .then(updateUI)
-  .catch(displayError)
-  .finally(allDone)
-}
-
-document.getElementById('calc').addEventListener('click', calculate);
-
-
+tim.getName(); // log 'Name: tim' after 2 seconds
