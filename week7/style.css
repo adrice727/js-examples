@@ -1,0 +1,89 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body * {
+  box-sizing: border-box;
+}
+
+.btn {
+  border: none;
+  box-shadow: none;
+  color: white;
+  font-size: 18px;
+  padding: 5px 30px;
+  cursor: pointer;
+}
+
+.green {
+  background: mediumseagreen;
+}
+
+.container {
+  width: 90vw;
+  margin: 20px auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.container > div {
+  margin: 10px 0;
+}
+
+.list-container {
+  padding: 20px;
+  border: 1px solid lightblue;
+  min-height: 200px;
+}
+
+.header {
+  font-family: Arial;
+  text-decoration: underline;
+  color: darkblue;
+  font-weight: 200;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.todo-list {
+  list-style-type: none;
+  text-align: center;
+  padding: 0;
+}
+
+.todo-list li {
+  font-size: 20px;
+  margin: 10px 0;
+  cursor: pointer;
+}
+
+.todo-list li.done {
+  text-decoration: line-through;
+  color: darkgrey;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+}
+
+.add-todo-form {
+  width: 550px;
+  margin: 0 auto;
+  display: flex;
+  height: 100px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.add-todo-form input {
+  width: 350px;
+  font-size: 14px;
+  line-height: 14px;
+  padding: 3px 5px;
+}
